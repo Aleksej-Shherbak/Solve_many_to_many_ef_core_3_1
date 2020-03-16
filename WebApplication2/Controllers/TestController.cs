@@ -1,8 +1,6 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebApplication2.Data;
-using WebApplication2.Models;
 using WebApplication2.Repos.Abstract;
 
 namespace WebApplication2.Controllers
@@ -19,6 +17,21 @@ namespace WebApplication2.Controllers
         }
 
         public IActionResult AddClasses()
+        {
+            // Без инклюдов будет попытка создать новые сущности.
+            var student = _studentRepository.All.Include(x => x.ClassStudents).ThenInclude(x => x.Class)
+                .FirstOrDefault();
+            var classes = _classRepository.All.Include(x => x.ClassStudents).ThenInclude(x => x.Student)
+                .ToList();
+
+            student.Classes = classes;
+
+            _studentRepository.Save(student);
+
+            return Ok();
+        }
+        
+        public IActionResult UpdateClasses()
         {
             // Без инклюдов будет попытка создать новые сущности.
             var student = _studentRepository.All.Include(x => x.ClassStudents).ThenInclude(x => x.Class)
