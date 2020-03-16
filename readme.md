@@ -35,45 +35,45 @@ manuallySending.AdvertiserManuallySendings = advertisersManuallySending;
 
 Student
 ```
-    public class Student
-    {
-        public int Id { get; set; }
+public class Student
+{
+    public int Id { get; set; }
 
-        public string Name { get; set; }
-        
-        public ICollection<ClassStudent> ClassStudents { get; set; }
+    public string Name { get; set; }
     
-        [NotMapped]
-        public IEnumerable<Class> Classes
+    public ICollection<ClassStudent> ClassStudents { get; set; }
+
+    [NotMapped]
+    public IEnumerable<Class> Classes
+    {
+        get => ClassStudents.Select(r => r.Class);
+        set => ClassStudents = value.Select(v => new ClassStudent()
         {
-            get => ClassStudents.Select(r => r.Class);
-            set => ClassStudents = value.Select(v => new ClassStudent()
-            {
-                ClassId = v.Id
-            }).ToList();
-        }
+            ClassId = v.Id
+        }).ToList();
     }
+}
 ```
 
 Class 
 ```
-    public class Class
+public class Class
+{
+    public int Id { get; set; }
+    public string ClassName { get; set; }
+
+    public ICollection<ClassStudent> ClassStudents { get; set; }
+
+    [NotMapped]
+    public IEnumerable<Student> Students
     {
-        public int Id { get; set; }
-        public string ClassName { get; set; }
-
-        public ICollection<ClassStudent> ClassStudents { get; set; }
-
-        [NotMapped]
-        public IEnumerable<Student> Students
+        get => ClassStudents.Select(r => r.Student);
+        set => ClassStudents = value.Select(v => new ClassStudent()
         {
-            get => ClassStudents.Select(r => r.Student);
-            set => ClassStudents = value.Select(v => new ClassStudent()
-            {
-                StudentId = v.Id
-            }).ToList();
-        }
+            StudentId = v.Id
+        }).ToList();
     }
+}
 ```
 
 Обратите внимание, как здесь организован доступ к связанным сущностям. 
