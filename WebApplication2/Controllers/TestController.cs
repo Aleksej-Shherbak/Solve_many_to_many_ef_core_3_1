@@ -20,8 +20,11 @@ namespace WebApplication2.Controllers
 
         public IActionResult AddClasses()
         {
-            var student = _studentRepository.All.FirstOrDefault();
-            var classes = _classRepository.All.ToList();
+            // Без инклюдов будет попытка создать новые сущности.
+            var student = _studentRepository.All.Include(x => x.ClassStudents).ThenInclude(x => x.Class)
+                .FirstOrDefault();
+            var classes = _classRepository.All.Include(x => x.ClassStudents).ThenInclude(x => x.Student)
+                .Where(x => x.Id > 2).ToList();
 
             student.Classes = classes;
 

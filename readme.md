@@ -94,3 +94,17 @@ public IActionResult AddClasses()
 ```
 
 Буквально две строчки на то, чтоб установить отношения! Это намного лучше, чем первый пример в данной статье!
+
+### Осторожно, подводный камень
+
+Обратите внимание на этот код в `TestController`
+
+```
+var student = _studentRepository.All.Include(x => x.ClassStudents).ThenInclude(x => x.Class)
+    .FirstOrDefault();
+var classes = _classRepository.All.Include(x => x.ClassStudents).ThenInclude(x => x.Student)
+    .Where(x => x.Id > 2).ToList();
+```
+
+Без инклюдов вы получите dunblicat `PK_ClassStudent duplicate key value violates unique constraint` исключение.
+Без подгрузки Ef не знает, есть эти записи или нет и пытается их создать. 
