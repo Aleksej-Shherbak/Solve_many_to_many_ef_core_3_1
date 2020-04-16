@@ -46,7 +46,7 @@ public class Student
     [NotMapped]
     public IEnumerable<Class> Classes
     {
-        get => ClassStudents.Select(r => r.Class);
+        get => ClassStudents?.Select(r => r.Class);
         set => ClassStudents = value.Select(v => new ClassStudent()
         {
             ClassId = v.Id
@@ -67,7 +67,7 @@ public class Class
     [NotMapped]
     public IEnumerable<Student> Students
     {
-        get => ClassStudents.Select(r => r.Student);
+        get => ClassStudents?.Select(r => r.Student);
         set => ClassStudents = value.Select(v => new ClassStudent()
         {
             StudentId = v.Id
